@@ -2,17 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Cart = ({ cartItems, updateQuantity, removeFromCart, checkout }) => {
-    const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+    const total = subtotal;
 
     if (cartItems.length === 0) {
         return (
             <div className="container cart-page">
-                <h2 style={{ marginBottom: '2rem' }}>Shopping Cart</h2>
+                <h2>Shopping Cart</h2>
                 <div className="empty-state">
                     <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🛒</div>
-                    <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Your cart is empty</h3>
-                    <p style={{ marginBottom: '2rem' }}>Looks like you haven't added any tools yet.</p>
-                    <Link to="/" className="btn btn-primary">Browse Validation Tools</Link>
+                    <h3>Your cart is empty</h3>
+                    <p>Start shopping to add items to your cart.</p>
+                    <Link to="/" className="btn btn-primary" style={{ marginTop: '1rem' }}>
+                        Browse Products
+                    </Link>
                 </div>
             </div>
         );
@@ -20,7 +23,7 @@ const Cart = ({ cartItems, updateQuantity, removeFromCart, checkout }) => {
 
     return (
         <div className="container cart-page">
-            <h2 style={{ marginBottom: '2rem', borderLeft: '4px solid var(--color-primary)', paddingLeft: '1rem' }}>Your Selection</h2>
+            <h2>Shopping Cart ({cartItems.length} {cartItems.length === 1 ? 'item' : 'items'})</h2>
 
             <table className="cart-table">
                 <thead>
@@ -29,51 +32,58 @@ const Cart = ({ cartItems, updateQuantity, removeFromCart, checkout }) => {
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Total</th>
-                        <th></th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {cartItems.map((item) => (
                         <tr key={item.id} className="cart-row">
                             <td>
-                                <div style={{ fontWeight: '600', fontSize: '1.1rem' }}>{item.name}</div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{item.category}</div>
+                                <div className="cart-product-info">
+                                    <div className="cart-product-name">{item.name}</div>
+                                    <div className="cart-product-category">{item.category}</div>
+                                </div>
                             </td>
-                            <td style={{ fontWeight: '500' }}>${item.price.toFixed(2)}</td>
+                            <td>
+                                <span style={{ fontWeight: '500', color: 'var(--text-primary)' }}>
+                                    ${parseFloat(item.price).toFixed(2)}
+                                </span>
+                            </td>
                             <td>
                                 <div className="quantity-control">
                                     <button
                                         className="qty-btn"
                                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                         disabled={item.quantity <= 1}
+                                        aria-label="Decrease quantity"
                                     >
-                                        -
+                                        −
                                     </button>
-                                    <span style={{ minWidth: '30px', textAlign: 'center', fontWeight: '600' }}>{item.quantity}</span>
+                                    <span className="qty-value">{item.quantity}</span>
                                     <button
                                         className="qty-btn"
                                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                        aria-label="Increase quantity"
                                     >
                                         +
                                     </button>
                                 </div>
                             </td>
-                            <td style={{ fontWeight: 'bold', color: 'var(--color-primary)', fontSize: '1.1rem' }}>
-                                ${(item.price * item.quantity).toFixed(2)}
+                            <td>
+                                <span style={{ fontWeight: '700', color: 'var(--color-primary)', fontSize: '1.125rem' }}>
+                                    ${(parseFloat(item.price) * item.quantity).toFixed(2)}
+                                </span>
                             </td>
                             <td>
                                 <button
+                                    className="btn btn-danger"
                                     onClick={() => removeFromCart(item.id)}
                                     style={{
-                                        color: '#ef4444',
-                                        background: 'rgba(239, 68, 68, 0.1)',
                                         padding: '0.5rem 1rem',
-                                        borderRadius: '4px',
-                                        fontSize: '0.8rem',
-                                        fontWeight: '600'
+                                        fontSize: '0.875rem'
                                     }}
                                 >
-                                    REMOVE
+                                    Remove
                                 </button>
                             </td>
                         </tr>
@@ -83,19 +93,19 @@ const Cart = ({ cartItems, updateQuantity, removeFromCart, checkout }) => {
 
             <div className="cart-summary">
                 <div className="summary-row">
-                    <span style={{ color: 'var(--text-muted)' }}>Subtotal</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>Subtotal</span>
+                    <span>${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="summary-row" style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', fontSize: '1.5rem' }}>
+                <div className="summary-row">
                     <span>Total</span>
-                    <span style={{ color: 'var(--color-primary)' }}>${total.toFixed(2)}</span>
+                    <span>${total.toFixed(2)}</span>
                 </div>
                 <button
                     className="btn btn-primary"
-                    style={{ width: '100%', padding: '1rem', marginTop: '2rem', fontSize: '1.1rem' }}
+                    style={{ width: '100%', padding: '1rem', marginTop: '1.5rem', fontSize: '1.125rem' }}
                     onClick={checkout}
                 >
-                    Checkout Now
+                    Proceed to Checkout
                 </button>
             </div>
         </div>

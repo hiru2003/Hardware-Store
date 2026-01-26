@@ -36,8 +36,12 @@ function App() {
     };
 
     const checkout = () => {
-        alert('Mock Checkout Successful! Thank you for your purchase.');
-        setCartItems([]);
+        const total = cartItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+        const message = `Checkout Successful!\n\nTotal: $${total.toFixed(2)}\nItems: ${cartItems.length}\n\nThank you for your purchase!`;
+        
+        if (window.confirm(message)) {
+            setCartItems([]);
+        }
     };
 
     return (
