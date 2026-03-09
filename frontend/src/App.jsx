@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProductGallery from './components/ProductGallery';
 import Cart from './components/Cart';
+import AuthPage from './components/AuthPage';
 
 function App() {
     const [cartItems, setCartItems] = useState([]);
+    const [auth, setAuth] = useState(() => ({
+        token: window.localStorage.getItem('authToken'),
+        username: window.localStorage.getItem('authUsername'),
+    }));
 
     const addToCart = (product) => {
         setCartItems(prevItems => {
@@ -44,21 +49,55 @@ function App() {
         }
     };
 
+    const handleAuthSuccess = (token, username) => {
+        setAuth({ token, username });
+    };
+
+    const handleLogout = () => {
+        window.localStorage.removeItem('authToken');
+        window.localStorage.removeItem('authUsername');
+        setAuth({ token: null, username: null });
+    };
+
     return (
         <Router>
             <div className="App">
-                <Navbar cartItemCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)} />
+                <Navbar
+                    cartItemCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                    isAuthenticated={!!auth.token}
+                    username={auth.username}
+                    onLogout={handleLogout}
+                />
                 <Routes>
-                    <Route path="/" element={<ProductGallery addToCart={addToCart} />} />
+                    <Route
+                        path="/"
+                        element={
+                            auth.token
+                                ? <ProductGallery addToCart={addToCart} />
+                                : <Navigate to="/auth" replace />
+                        }
+                    />
+                    <Route
+                        path="/auth"
+                        element={
+                            auth.token
+                                ? <Navigate to="/" replace />
+                                : <AuthPage onAuthSuccess={handleAuthSuccess} />
+                        }
+                    />
                     <Route
                         path="/cart"
                         element={
-                            <Cart
-                                cartItems={cartItems}
-                                updateQuantity={updateQuantity}
-                                removeFromCart={removeFromCart}
-                                checkout={checkout}
-                            />
+                            auth.token ? (
+                                <Cart
+                                    cartItems={cartItems}
+                                    updateQuantity={updateQuantity}
+                                    removeFromCart={removeFromCart}
+                                    checkout={checkout}
+                                />
+                            ) : (
+                                <Navigate to="/auth" replace />
+                            )
                         }
                     />
                 </Routes>

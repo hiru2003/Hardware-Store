@@ -16,7 +16,15 @@ const ProductGallery = ({ addToCart }) => {
             setProducts(response.data);
             setLoading(false);
         } catch (err) {
-            setError('Failed to fetch products. Please ensure the backend server is running on port 8080.');
+            const msg = err.response?.data?.message || err.response?.data || err.message;
+            const status = err.response?.status;
+            setError(
+                status === 401
+                    ? 'Session expired. Please sign in again.'
+                    : status
+                        ? `Failed to fetch products (${status}). ${typeof msg === 'string' ? msg : 'Check your connection.'}`
+                        : 'Failed to fetch products. Please ensure the backend server is running on port 8080.'
+            );
             setLoading(false);
         }
     };
