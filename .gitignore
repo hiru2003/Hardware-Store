@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+
+# Build/Deps (project specific but good for root too)
+node_modules/
+target/
+dist/
