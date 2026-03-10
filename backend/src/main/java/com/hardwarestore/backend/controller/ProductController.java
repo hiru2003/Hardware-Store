@@ -46,9 +46,8 @@ public class ProductController {
                 return ResponseEntity.badRequest().body("File is empty");
             }
 
-            // Define the path to the frontend public images folder
-            String uploadDir = "../frontend/public/images/";
-            Path uploadPath = Paths.get(uploadDir);
+            // Define the path to the frontend public images folder (robust across OS)
+            Path uploadPath = Paths.get("..", "frontend", "public", "images");
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
