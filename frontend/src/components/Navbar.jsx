@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const Navbar = ({ cartItemCount, isAuthenticated, username, onLogout }) => {
+const Navbar = ({ cartItemCount, isAuthenticated, username, role, onLogout }) => {
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -14,47 +14,53 @@ const Navbar = ({ cartItemCount, isAuthenticated, username, onLogout }) => {
         <nav className="navbar">
             <div className="container navbar-content">
                 <Link to="/" className="brand">
-                    <span>Hardware</span> <span>Store</span>
+                    PRO-<span>TOOLS</span>
                 </Link>
                 <div className="nav-links">
-                    {isAuthenticated && (
+                    <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>
+                        Home
+                    </Link>
+                    <Link to="/products" className={`nav-link ${location.pathname === '/products' ? 'active' : ''}`}>
+                        Products
+                    </Link>
+
+                    {isAuthenticated ? (
                         <>
-                            <Link
-                                to="/"
-                                className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-                            >
-                                Products
-                            </Link>
-                            <Link
-                                to="/cart"
-                                className={`nav-link ${location.pathname === '/cart' ? 'active' : ''}`}
-                            >
-                                <div className="cart-icon-wrapper">
-                                    <span>Cart</span>
-                                    {cartItemCount > 0 && (
-                                        <span className="badge">{cartItemCount > 99 ? '99+' : cartItemCount}</span>
-                                    )}
-                                </div>
-                            </Link>
-                            <span className="nav-user">Hi, {username || 'User'}</span>
-                            <button
-                                type="button"
-                                className="btn btn-logout"
-                                onClick={handleLogout}
-                                aria-label="Log out"
-                            >
-                                Log out
-                            </button>
+                            {role === 'ADMIN' ? (
+                                <Link
+                                    to="/admin"
+                                    className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}
+                                >
+                                    Dashboard
+                                </Link>
+                            ) : (
+                                <Link
+                                    to="/cart"
+                                    className={`nav-link ${location.pathname === '/cart' ? 'active' : ''}`}
+                                >
+                                    <div className="cart-icon-wrapper">
+                                        <span>Cart</span>
+                                        {cartItemCount > 0 && (
+                                            <span className="badge">{cartItemCount > 99 ? '99+' : cartItemCount}</span>
+                                        )}
+                                    </div>
+                                </Link>
+                            )}
+                            <div className="nav-user-wrap">
+                                <span className="nav-user">{username || 'User'}</span>
+                                <button
+                                    type="button"
+                                    className="btn-logout"
+                                    onClick={handleLogout}
+                                >
+                                    Logout
+                                </button>
+                            </div>
                         </>
-                    )}
-                    {!isAuthenticated && (
-                        <button
-                            type="button"
-                            className="btn btn-primary nav-signin-btn"
-                            onClick={() => navigate('/auth')}
-                        >
-                            Sign in
-                        </button>
+                    ) : (
+                        <Link to="/auth" className="btn btn-primary nav-signin-btn">
+                            Sign In
+                        </Link>
                     )}
                 </div>
             </div>

@@ -26,4 +26,9 @@ export const deleteProduct = (id) => api.delete(`/products/${id}`);
 export const registerUser = (payload) => api.post('/auth/register', payload);
 export const loginUser = (payload) => api.post('/auth/login', payload);
 
+// Order endpoints
+export const placeOrder = (items) => api.post('/orders', items);
+export const getMyOrders = () => api.get('/orders/my-orders');
+export const getAllOrders = () => api.get('/orders');
+
 export default api;

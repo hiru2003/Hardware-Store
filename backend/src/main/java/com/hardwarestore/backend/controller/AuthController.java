@@ -60,7 +60,7 @@ public class AuthController {
         claims.put("role", user.getRole());
         String token = jwtService.generateToken(user.getUsername(), claims);
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(new AuthResponse(token, user.getUsername(), user.getRole()));
     }
 
     @PostMapping("/login")
@@ -80,7 +80,7 @@ public class AuthController {
                     claims.put("role", user.getRole());
                     String token = jwtService.generateToken(user.getUsername(), claims);
 
-                    return ResponseEntity.ok(new AuthResponse(token));
+                    return ResponseEntity.ok(new AuthResponse(token, user.getUsername(), user.getRole()));
                 })
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials"));
     }

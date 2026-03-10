@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { loginUser, registerUser } from '../services/api';
 
 const AuthPage = ({ onAuthSuccess }) => {
@@ -10,10 +10,12 @@ const AuthPage = ({ onAuthSuccess }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    const navigate = useNavigate();
+
     const toggleMode = (nextMode) => {
         setMode(nextMode);
         setError('');
-        if (nextMode === 'login') setEmail('');
+        if (nextMode === 'login' || nextMode === 'admin') setEmail('');
     };
 
     const handleSubmit = async (e) => {
@@ -31,23 +33,35 @@ const AuthPage = ({ onAuthSuccess }) => {
 
         setLoading(true);
         try {
-            const payload = mode === 'login'
+            const payload = (mode === 'login' || mode === 'admin')
                 ? { username: username.trim(), password: password.trim() }
                 : { username: username.trim(), email: email.trim(), password: password.trim() };
-            const response = mode === 'login'
+
+            console.log(`Attempting ${mode} action with:`, username);
+            const response = (mode === 'login' || mode === 'admin')
                 ? await loginUser(payload)
                 : await registerUser(payload);
 
+            console.log('Login response received:', response.data);
+
             const token = response.data?.token;
+            const resUsername = response.data?.username || username.trim();
+            const resRole = response.data?.role || 'USER';
+
             if (token) {
-                window.localStorage.setItem('authToken', token);
-                window.localStorage.setItem('authUsername', payload.username);
-                if (onAuthSuccess) onAuthSuccess(token, payload.username);
-                window.location.href = '/';
+                console.log('Login successful, calling onAuthSuccess');
+                if (onAuthSuccess) onAuthSuccess(token, resUsername, resRole);
+
+                // Use setTimeout to ensure state is set before navigating
+                setTimeout(() => {
+                    navigate(resRole === 'ADMIN' ? '/admin' : '/');
+                }, 100);
             } else {
+                console.error('No token in response');
                 setError('Something went wrong. Please try again.');
             }
         } catch (err) {
+            console.error('Login error:', err);
             const msg = err.response?.data;
             if (err.response?.status === 401) {
                 setError(typeof msg === 'string' ? msg : 'Invalid username or password.');
@@ -67,8 +81,8 @@ const AuthPage = ({ onAuthSuccess }) => {
             <div className="auth-ecom-wrap">
                 <div className="auth-ecom-card">
                     <Link to="/" className="auth-ecom-logo">
-                        <span className="auth-ecom-logo-primary">Hardware</span>
-                        <span className="auth-ecom-logo-secondary">Store</span>
+                        <span className="auth-ecom-logo-primary">PRO-</span>
+                        <span className="auth-ecom-logo-secondary">TOOLS</span>
                     </Link>
 
                     <div className="auth-ecom-tabs">
@@ -86,15 +100,24 @@ const AuthPage = ({ onAuthSuccess }) => {
                         >
                             Create account
                         </button>
+                        <button
+                            type="button"
+                            className={`auth-ecom-tab admin-tab ${mode === 'admin' ? 'active' : ''}`}
+                            onClick={() => toggleMode('admin')}
+                        >
+                            Admin
+                        </button>
                     </div>
 
                     <h1 className="auth-ecom-title">
-                        {mode === 'login' ? 'Welcome back' : 'Create your account'}
+                        {mode === 'login' ? 'Welcome back' : mode === 'admin' ? 'Admin Access' : 'Create your account'}
                     </h1>
                     <p className="auth-ecom-subtitle">
                         {mode === 'login'
                             ? 'Sign in with your username and password to continue shopping.'
-                            : 'Register with your email to start shopping.'}
+                            : mode === 'admin'
+                                ? 'Restricted access for store administrators only.'
+                                : 'Register with your email to start shopping.'}
                     </p>
 
                     <form className="auth-ecom-form" onSubmit={handleSubmit}>
@@ -144,19 +167,19 @@ const AuthPage = ({ onAuthSuccess }) => {
 
                         <button
                             type="submit"
-                            className="btn btn-primary auth-ecom-submit"
+                            className={`btn btn-primary auth-ecom-submit ${mode === 'admin' ? 'btn-admin' : ''}`}
                             disabled={loading}
                         >
                             {loading
-                                ? (mode === 'login' ? 'Signing in...' : 'Creating account...')
-                                : (mode === 'login' ? 'Sign in' : 'Create account')}
+                                ? (mode === 'login' ? 'Signing in...' : mode === 'admin' ? 'Authenticating Admin...' : 'Creating account...')
+                                : (mode === 'login' ? 'Sign in' : mode === 'admin' ? 'Admin Sign in' : 'Create account')}
                         </button>
                     </form>
 
                     <p className="auth-ecom-switch">
                         {mode === 'login' ? (
                             <>
-                                New to Hardware Store?{' '}
+                                New to Pro-Tools?{' '}
                                 <button type="button" className="auth-ecom-switch-link" onClick={() => toggleMode('register')}>
                                     Create an account
                                 </button>

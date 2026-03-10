@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             username = jwtService.extractUsername(token);
         } catch (Exception ex) {
+            System.out.println("JWT Extraction failed: " + ex.getMessage());
             filterChain.doFilter(request, response);
             return;
         }
@@ -59,6 +60,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         );
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                
+                System.out.println("User authenticated: " + username + " with authorities: " + userDetails.getAuthorities());
+            } else {
+                System.out.println("Token invalid for user: " + username);
             }
         }
 

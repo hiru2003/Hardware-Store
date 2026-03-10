@@ -10,11 +10,11 @@ const Cart = ({ cartItems, updateQuantity, removeFromCart, checkout }) => {
             <div className="container cart-page">
                 <h2>Shopping Cart</h2>
                 <div className="empty-state">
-                    <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🛒</div>
+                    <div style={{ fontSize: '5rem', marginBottom: '1.5rem', opacity: 0.5 }}>🛒</div>
                     <h3>Your cart is empty</h3>
-                    <p>Start shopping to add items to your cart.</p>
-                    <Link to="/" className="btn btn-primary" style={{ marginTop: '1rem' }}>
-                        Browse Products
+                    <p>Start shopping to find professional tools for your next project.</p>
+                    <Link to="/products" className="btn btn-primary" style={{ marginTop: '1.5rem', padding: '1rem 2rem' }}>
+                        Browse Pro-Collection
                     </Link>
                 </div>
             </div>
