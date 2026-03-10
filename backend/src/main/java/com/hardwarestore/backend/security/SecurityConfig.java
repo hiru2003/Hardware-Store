@@ -58,7 +58,7 @@ public class SecurityConfig {
                                 "/actuator/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                        .requestMatchers("/api/products/**").hasAuthority("ROLE_ADMIN","ROLE_USER")
+                        .requestMatchers("/api/products/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                         .anyRequest().authenticated()
                 );
 

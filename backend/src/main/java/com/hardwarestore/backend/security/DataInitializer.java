@@ -38,16 +38,17 @@ public class DataInitializer implements CommandLineRunner {
 
         // Seed initial products if database is empty
         if (productRepository.count() == 0) {
-            productRepository.save(new Product(null, "Cordless Power Drill", "18V High-performance varying speed drill with 2 batteries.", new BigDecimal("129.99"), "Power Tools", 25));
-            productRepository.save(new Product(null, "Precision Screwdriver Set", "42-piece precision kit for electronics and small appliances.", new BigDecimal("24.50"), "Hand Tools", 50));
-            productRepository.save(new Product(null, "Adjustable Wrench (10-inch)", "Chrome vanadium steel wrench with comfortable grip.", new BigDecimal("18.75"), "Hand Tools", 30));
-            productRepository.save(new Product(null, "7-1/4 inch Circular Saw", "15 Amp powerful motor for heavy duty cutting.", new BigDecimal("89.00"), "Power Tools", 15));
-            productRepository.save(new Product(null, "25ft Tape Measure", "Durable impact resistant case with easy lock.", new BigDecimal("12.99"), "Measuring", 100));
-            productRepository.save(new Product(null, "24-inch I-Beam Level", "Heavy duty aluminum frame with 3 vials.", new BigDecimal("22.95"), "Measuring", 20));
-            productRepository.save(new Product(null, "Industrial Safety Helmet", "Yellow hard hat with adjustable suspension.", new BigDecimal("15.50"), "Safety", 60));
-            productRepository.save(new Product(null, "Heavy Duty Work Gloves", "Leather palm gloves for construction work.", new BigDecimal("19.99"), "Safety", 80));
-            productRepository.save(new Product(null, "19-inch Plastic Toolbox", "Robust toolbox with removable tray and metal latches.", new BigDecimal("34.99"), "Storage", 35));
-            System.out.println("Database seeded with initial products.");
+            productRepository.save(new Product(null, "Heavy-Duty Hammer", "Forged steel head for maximum strength and durability.", new BigDecimal("15.99"), "Hand Tools", 50, "/images/hammer.jpg"));
+            productRepository.save(new Product(null, "Precision Screwdriver Set", "42-piece set for electronics and fine mechanical work.", new BigDecimal("24.50"), "Hand Tools", 40, "/images/screwdriver_set.jpg"));
+            productRepository.save(new Product(null, "Professional Electric Drill", "18V Cordless drill with variable speed and high torque.", new BigDecimal("129.99"), "Power Tools", 25, "/images/electric_drill.jpg"));
+            productRepository.save(new Product(null, "Adjustable Wrench", "10-inch chrome vanadium steel wrench with comfortable grip.", new BigDecimal("19.50"), "Hand Tools", 35, "/images/wrench.jpg"));
+            productRepository.save(new Product(null, "Measuring Tape", "25ft impact-resistant tape measure with easy-lock button.", new BigDecimal("12.99"), "Measuring", 100, "/images/measuring_tape.jpg"));
+            productRepository.save(new Product(null, "Nylon Paint Brush", "3-inch professional grade brush for smooth finishes.", new BigDecimal("8.50"), "Painting", 120, "/images/paint_brush.jpg"));
+            productRepository.save(new Product(null, "Long Nose Pliers", "Hardened steel pliers with ergonomic non-slip handles.", new BigDecimal("14.75"), "Hand Tools", 45, "/images/pliers.jpg"));
+            productRepository.save(new Product(null, "Industrial Angle Grinder", "Powerful 11-Amp motor for grinding and cutting metal.", new BigDecimal("79.00"), "Power Tools", 15, "/images/angle_grinder.jpg"));
+            productRepository.save(new Product(null, "Latex Safety Gloves", "Cut-resistant palm coating for industrial protection.", new BigDecimal("12.50"), "Safety", 200, "/images/safety_gloves.jpg"));
+            productRepository.save(new Product(null, "Aluminum Step Ladder", "6ft lightweight foldable ladder with slip-resistant steps.", new BigDecimal("65.00"), "Equipment", 10, "/images/ladder.jpg"));
+            System.out.println("Database seeded with exactly 10 hardware products.");
         }
     }
 }

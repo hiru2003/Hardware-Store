@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { placeOrder } from './services/api';
 import Home from './components/Home';
 import Footer from './components/Footer';
@@ -10,6 +10,7 @@ import AuthPage from './components/AuthPage';
 import AdminDashboard from './components/AdminDashboard';
 
 function App() {
+    const navigate = useNavigate();
     const [cartItems, setCartItems] = useState([]);
     const [auth, setAuth] = useState(() => ({
         token: window.localStorage.getItem('authToken'),
@@ -18,6 +19,10 @@ function App() {
     }));
 
     const addToCart = (product) => {
+        if (!auth.token) {
+            navigate('/auth');
+            return;
+        }
         setCartItems(prevItems => {
             const existingItem = prevItems.find(item => item.id === product.id);
             if (existingItem) {
@@ -74,64 +79,69 @@ function App() {
     };
 
     return (
-        <Router>
-            <div className="App">
-                <Navbar
-                    cartItemCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                    isAuthenticated={!!auth.token}
-                    username={auth.username}
-                    role={auth.role}
-                    onLogout={handleLogout}
-                />
-                <main style={{ minHeight: '80vh' }}>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route
-                            path="/products"
-                            element={<ProductGallery addToCart={addToCart} />}
-                        />
-                        <Route
-                            path="/auth"
-                            element={
-                                auth.token
-                                    ? <Navigate to="/products" replace />
-                                    : <AuthPage onAuthSuccess={handleAuthSuccess} />
-                            }
-                        />
-                        <Route
-                            path="/cart"
-                            element={
-                                auth.token ? (
-                                    auth.role === 'ADMIN' ? (
-                                        <Navigate to="/admin" replace />
-                                    ) : (
-                                        <Cart
-                                            cartItems={cartItems}
-                                            updateQuantity={updateQuantity}
-                                            removeFromCart={removeFromCart}
-                                            checkout={checkout}
-                                        />
-                                    )
+        <div className="App">
+            <Navbar
+                cartItemCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                isAuthenticated={!!auth.token}
+                username={auth.username}
+                role={auth.role}
+                onLogout={handleLogout}
+            />
+            <main style={{ minHeight: '80vh' }}>
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
+                            auth.token
+                                ? <Home />
+                                : <Navigate to="/auth" replace />
+                        }
+                    />
+                    <Route
+                        path="/products"
+                        element={<ProductGallery addToCart={addToCart} />}
+                    />
+                    <Route
+                        path="/auth"
+                        element={
+                            auth.token
+                                ? <Navigate to="/products" replace />
+                                : <AuthPage onAuthSuccess={handleAuthSuccess} />
+                        }
+                    />
+                    <Route
+                        path="/cart"
+                        element={
+                            auth.token ? (
+                                auth.role === 'ADMIN' ? (
+                                    <Navigate to="/admin" replace />
                                 ) : (
-                                    <Navigate to="/auth" replace />
+                                    <Cart
+                                        cartItems={cartItems}
+                                        updateQuantity={updateQuantity}
+                                        removeFromCart={removeFromCart}
+                                        checkout={checkout}
+                                    />
                                 )
-                            }
-                        />
-                        <Route
-                            path="/admin"
-                            element={
-                                auth.token && auth.role === 'ADMIN' ? (
-                                    <AdminDashboard />
-                                ) : (
-                                    <Navigate to="/" replace />
-                                )
-                            }
-                        />
-                    </Routes>
-                </main>
-                <Footer />
-            </div>
-        </Router>
+                            ) : (
+                                <Navigate to="/auth" replace />
+                            )
+                        }
+                    />
+                    <Route
+                        path="/admin"
+                        element={
+                            auth.token && auth.role === 'ADMIN' ? (
+                                <AdminDashboard />
+                            ) : (
+                                <Navigate to="/" replace />
+                            )
+                        }
+                    />
+                </Routes>
+            </main>
+            <Footer />
+        </div>
     );
 }
 

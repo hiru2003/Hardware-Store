@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getProducts, createProduct, updateProduct, deleteProduct, getAllOrders } from '../services/api';
+import { getProducts, createProduct, updateProduct, deleteProduct, getAllOrders, uploadProductImage } from '../services/api';
 
 const AdminDashboard = () => {
     const [products, setProducts] = useState([]);
@@ -13,8 +13,11 @@ const AdminDashboard = () => {
         description: '',
         price: '',
         category: '',
-        stockQuantity: ''
+        stockQuantity: '',
+        imageUrl: ''
     });
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         fetchData();
@@ -43,8 +46,10 @@ const AdminDashboard = () => {
             description: product.description,
             price: product.price,
             category: product.category,
-            stockQuantity: product.stockQuantity
+            stockQuantity: product.stockQuantity,
+            imageUrl: product.imageUrl || ''
         });
+        setSelectedFile(null);
         setShowModal(true);
     };
 
@@ -61,17 +66,43 @@ const AdminDashboard = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setUploading(true);
         try {
-            if (editingProduct) {
-                await updateProduct(editingProduct.id, formData);
-            } else {
-                await createProduct(formData);
+            let finalImageUrl = formData.imageUrl;
+
+            // If a new file is selected, upload it first
+            if (selectedFile) {
+                console.log('Starting image upload for:', selectedFile.name);
+                try {
+                    const uploadRes = await uploadProductImage(selectedFile);
+                    finalImageUrl = uploadRes.data;
+                    console.log('Upload successful! Image URL:', finalImageUrl);
+                } catch (uploadErr) {
+                    console.error('Image upload failed:', uploadErr);
+                    alert('Failed to upload image: ' + (uploadErr.response?.data?.message || uploadErr.response?.data || uploadErr.message));
+                    setUploading(false);
+                    return; // Stop here if upload fails
+                }
             }
+
+            const productData = { ...formData, imageUrl: finalImageUrl };
+            console.log('Saving product data:', productData);
+
+            if (editingProduct) {
+                await updateProduct(editingProduct.id, productData);
+            } else {
+                await createProduct(productData);
+            }
+            console.log('Product saved successfully');
             setShowModal(false);
             setEditingProduct(null);
+            setSelectedFile(null);
             fetchData();
         } catch (err) {
-            alert('Failed to save product');
+            console.error('Failed to save product:', err);
+            alert('Failed to save product: ' + (err.response?.data?.message || err.response?.data || err.message));
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -103,7 +134,8 @@ const AdminDashboard = () => {
                         <h2>Product Management</h2>
                         <button className="btn btn-primary" onClick={() => {
                             setEditingProduct(null);
-                            setFormData({ name: '', description: '', price: '', category: '', stockQuantity: '' });
+                            setFormData({ name: '', description: '', price: '', category: '', stockQuantity: '', imageUrl: '' });
+                            setSelectedFile(null);
                             setShowModal(true);
                         }}>
                             + Add Product
@@ -115,6 +147,7 @@ const AdminDashboard = () => {
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Image</th>
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Price</th>
@@ -126,6 +159,13 @@ const AdminDashboard = () => {
                                 {products.map(product => (
                                     <tr key={product.id}>
                                         <td>{product.id}</td>
+                                        <td>
+                                            {product.imageUrl ? (
+                                                <img src={product.imageUrl} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+                                            ) : (
+                                                'N/A'
+                                            )}
+                                        </td>
                                         <td>{product.name}</td>
                                         <td>{product.category || 'N/A'}</td>
                                         <td>${parseFloat(product.price).toFixed(2)}</td>
@@ -189,6 +229,25 @@ const AdminDashboard = () => {
                                 />
                             </div>
                             <div className="form-group">
+                                <label>Upload Product Image</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                                    className="file-input"
+                                />
+                                {selectedFile && <p className="file-hint">Ready to upload: {selectedFile.name}</p>}
+                            </div>
+                            <div className="form-group">
+                                <label>Or Manual Image URL</label>
+                                <input
+                                    type="text"
+                                    value={formData.imageUrl}
+                                    onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                                    placeholder="/images/your-image.jpg"
+                                />
+                            </div>
+                            <div className="form-group">
                                 <label>Category</label>
                                 <input
                                     type="text"
@@ -223,8 +282,13 @@ const AdminDashboard = () => {
                                 />
                             </div>
                             <div className="modal-actions">
-                                <button type="button" className="btn btn-outline" onClick={() => setShowModal(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary">Save Product</button>
+                                <button type="button" className="btn btn-outline" onClick={() => {
+                                    setShowModal(false);
+                                    setSelectedFile(null);
+                                }}>Cancel</button>
+                                <button type="submit" className="btn btn-primary" disabled={uploading}>
+                                    {uploading ? 'Processing...' : 'Save Product'}
+                                </button>
                             </div>
                         </form>
                     </div>

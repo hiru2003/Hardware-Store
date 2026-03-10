@@ -73,7 +73,19 @@ const ProductGallery = ({ addToCart }) => {
                             <div key={product.id} className="pro-card">
                                 <div className="img-wrapper">
                                     <span className="tag">{product.category || 'Professional'}</span>
-                                    <div className="icon-box">🛠️</div>
+                                    {product.imageUrl ? (
+                                        <img
+                                            src={product.imageUrl}
+                                            alt={product.name}
+                                            className="pro-img"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = 'https://placehold.co/400x300?text=Tool';
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="icon-box">🛠️</div>
+                                    )}
                                 </div>
                                 <div className="pro-details">
                                     <h3 className="pro-name">{product.name}</h3>

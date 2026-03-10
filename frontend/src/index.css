@@ -944,11 +944,50 @@ button {
 }
 
 .auth-ecom-card {
+  position: relative;
   background: var(--bg-primary);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
-  border: 1px solid var(--border-light);
-  padding: 2rem 2rem 2.5rem;
+  padding: 2.25rem 2.25rem 2.75rem;
+  z-index: 1;
+}
+
+/* Creative Border Design */
+.auth-ecom-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  background: linear-gradient(35deg,
+      var(--color-primary),
+      #ff8c00,
+      #ffcc00,
+      var(--color-primary));
+  background-size: 300% 300%;
+  border-radius: calc(var(--radius-xl) + 2px);
+  animation: auth-border-flow 6s linear infinite;
+}
+
+@keyframes auth-border-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.auth-ecom-card::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--bg-primary);
+  border-radius: calc(var(--radius-xl) - 1px);
+  z-index: -1;
 }
 
 .auth-ecom-logo {
@@ -1277,12 +1316,13 @@ button {
   gap: 1rem;
   margin-top: 2rem;
 }
+
 /* --- Redesign: Premium Home Page --- */
 
 .premium-hero {
   padding: 8rem 0 6rem;
   background: radial-gradient(circle at top right, rgba(234, 88, 12, 0.05), transparent),
-              radial-gradient(circle at bottom left, rgba(15, 23, 42, 0.05), transparent);
+    radial-gradient(circle at bottom left, rgba(15, 23, 42, 0.05), transparent);
   border-bottom: 1px solid var(--border-subtle);
   overflow: hidden;
   position: relative;
@@ -1478,7 +1518,7 @@ button {
 
 .footer-bottom {
   padding-top: 2rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1556,8 +1596,8 @@ button {
   flex: 1;
   padding: 1rem 1.5rem;
   border-radius: var(--radius-product);
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   color: white;
   outline: none;
 }
@@ -1577,15 +1617,19 @@ button {
   .footer-grid {
     grid-template-columns: 1fr;
   }
+
   .feature-grid {
     grid-template-columns: 1fr;
   }
+
   .hero-actions {
     flex-direction: column;
   }
+
   .cta-box {
     padding: 3rem 1.5rem;
   }
+
   .cta-form {
     flex-direction: column;
   }
@@ -1654,12 +1698,12 @@ button {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .icon-box {
   font-size: 5rem;
-  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
 }
 
 .pro-details {
@@ -1725,8 +1769,13 @@ button {
   gap: 0.4rem;
 }
 
-.stock-status.available { color: var(--color-success); }
-.stock-status.unavailable { color: var(--color-danger); }
+.stock-status.available {
+  color: var(--color-success);
+}
+
+.stock-status.unavailable {
+  color: var(--color-danger);
+}
 
 /* User Control Styling */
 .nav-user-wrap {
@@ -1757,3 +1806,40 @@ button {
   color: var(--color-danger);
 }
 
+
+/* --- Product Image Support --- */
+.pro-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-premium);
+}
+
+.pro-card:hover .pro-img {
+  transform: scale(1.1);
+}
+
+
+/* --- Admin Image Upload Styling --- */
+.file-input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px dashed var(--border-subtle);
+  border-radius: 8px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.file-input:hover {
+  border-color: var(--color-brand);
+  background: white;
+}
+
+.file-hint {
+  font-size: 0.75rem;
+  color: var(--color-success);
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
