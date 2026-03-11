@@ -10,7 +10,7 @@ const Footer = () => {
                         <div className="brand" style={{ color: 'white' }}>
                             PRO-<span>TOOLS</span>
                         </div>
-                        <p>Providing the highest quality hardware and industrial equipment since 2024. Your trusted partner in construction and DIY.</p>
+                        <p>Providing the highest quality hardware and industrial equipment. Your trusted partner in construction and DIY.</p>
                         <div className="social-links">
                             <span>𝕏</span>
                             <span>📘</span>
@@ -39,16 +39,10 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    <div className="footer-contact">
-                        <h4>Contact Us</h4>
-                        <p>📍 123 Tool Street, Workshop City</p>
-                        <p>📞 +1 (555) 0123-4567</p>
-                        <p>📧 support@protools.com</p>
-                    </div>
                 </div>
 
                 <div className="footer-bottom">
-                    <p>© 2024 Pro-Tools Hardware Store. All rights reserved.</p>
+                    <p>© Pro-Tools Hardware Store. All rights reserved.</p>
                     <div className="payment-icons">
                         <span>💳</span>
                         <span>🅿️</span>
