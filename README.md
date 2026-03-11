@@ -1,5 +1,8 @@
 # Hardware Store Management System
 
+Student Name: K.M.G.H Dilshan
+University Index Number: FC221016
+
 A full-stack e-commerce application for managing a hardware store, featuring a modern React frontend and a robust Spring Boot backend.
 
 ## CRUD Operations
