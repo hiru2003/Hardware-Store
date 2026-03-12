@@ -17,6 +17,23 @@ The system provides full CRUD (Create, Read, Update, Delete) functionality for p
 -   **Update**: Edit existing product information (prices, stock, descriptions) directly from the admin table.
 -   **Delete**: Remove products from the catalog with a confirmation prompt.
 
+## Site Features & User Guide
+
+### Admin Dashboard (Product Management)
+1.  **Login**: Access the login page (`/auth`) and sign in using the **Admin Credentials** provided below.
+2.  **Navigate to Dashboard**: Once logged in, click the "Dashboard" link in the navigation bar.
+3.  **Add Products**:
+    -   Click the **"+ Add Product"** button at the top of the inventory section.
+    -   Provide details: Name, Category, Price, and Stock Quantity.
+    -   **Images**: You can either upload a local image file or provide a manual URL (e.g., `/images/hammer.jpg`).
+4.  **Update Products**: Locate the product in the table and click the **Edit (✏️) icon**. Update the details in the modal and save.
+5.  **Manage Orders**: Switch to the "Orders" tab in the dashboard to view recent industrial sales and customer details.
+
+### Customer & Shopping Experience
+-   **Explore Gallery**: Use the interactive home gallery to browse professional gear with smooth animations and hover effects.
+-   **Shopping Cart**: Add multiple items to your cart, adjust quantities, and see a real-time total calculation.
+-   **Authenticated Checkout**: Users can register and login to securely place orders, simulating a real e-commerce workflow.
+
 ## Prerequisites
 
 Before running the project, ensure you have the following installed:
