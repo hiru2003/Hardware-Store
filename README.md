@@ -21,6 +21,11 @@ The system provides full CRUD (Create, Read, Update, Delete) functionality for p
 
 ### Admin Dashboard (Product Management)
 1.  **Login**: Access the login page (`/auth`) and sign in using the **Admin Credentials** provided below.
+   
+  Authentication
+-   **Admin**: `admin` / `admin123`
+-   **User**: Register a new account or use an existing one to test shopping features.
+
 2.  **Navigate to Dashboard**: Once logged in, click the "Dashboard" link in the navigation bar.
 3.  **Add Products**:
     -   Click the **"+ Add Product"** button at the top of the inventory section.
